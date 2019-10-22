@@ -1,0 +1,20 @@
+.maskLayer{position: fixed;width: 100%;height: 100%;top:0;left:0;background: #ffffff;z-index: 99998;opacity: 0.5;} 
+.inner{position: fixed;width: 100%;z-index: 99999;border-top-right-radius: 30rpx; border-top-left-radius: 30rpx;background: #ffffff;left: 0rpx;}
+ .btn{width:100%; height: 100rpx;}
+ .btn1{width: 30%;height: 100rpx;line-height: 110rpx; color: #565656;float: left;text-align: left;padding-left: 50rpx; font-size: 36rpx;}
+ .btn2{width: 30%;height: 100rpx;line-height: 110rpx; color: #00A6DE;float: right;text-align: right;padding-right: 50rpx;font-size: 36rpx;}
+
+.picker-view-column_style1{height: 40px;line-height: 40px;text-align: center;color: #1F1F1F;font-size: 42rpx;}
+
+
+.inner_radio{position: fixed;width: 100%; z-index: 99999;background: #ffffff; left: 0rpx;}
+.inner_radio_content{width: 94%;height: 98%;margin:auto;border:1rpx #F2F2F2 solid;}
+.inner_radio_main{width: 100%;height: auto;max-height: 80%;overflow-y: auto;}
+.inner_radio_column{width: 100%;height: 100rpx;}
+.inner_radio_lable{width: 50%;height: 100rpx;line-height: 100rpx;float: left;font-size: 35rpx;color: #1F1F1F;border-bottom: 1rpx #F2F2F2 solid;}
+.inner_radio_icon{width: 50%;height: 100rpx;line-height: 100rpx;float: right;border-bottom: 1rpx #F2F2F2 solid;}
+
+.inner_radio_btn{width: 100%; height: 90rpx; margin-top: 50rpx;}
+.inner_radio_btn1{height: 90rpx;width: 252rpx;border:#00A6DE 1rpx solid;color:#00A6DE; float: left; border-radius: 45rpx;text-align: center;line-height: 90rpx;margin-left: 50rpx; }
+.inner_radio_btn2{height: 90rpx;width: 252rpx;background: #00A7DE;float: right; border-radius: 45rpx;color: #fff;text-align: center;line-height: 90rpx;margin-right: 50rpx; }
+
