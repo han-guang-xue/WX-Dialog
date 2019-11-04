@@ -1,0 +1,3 @@
+<view class="body-suspension" style="top: {{UDnumber}}px; left: {{LRnumber}}px;background:red;" touchstart="touchstart" touchmove="touchmove" touchend="touchend">
+  拖拽
+</view>

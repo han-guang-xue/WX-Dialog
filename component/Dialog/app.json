@@ -1,7 +1,8 @@
 {
   "pages": [
     "index/index",
-    "component/dialog/dialog"
+    "component/dialog/dialog",
+    "component/drop/drop"
   ],
   "window": {
     "backgroundTextStyle": "light",

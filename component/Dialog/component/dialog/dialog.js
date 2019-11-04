@@ -3,12 +3,12 @@ Component({
     type: String,
     methodSuccess: String,
     multiSelect: String,
+    all: String,
     otherData: String,
     lableTitle: String,
     default_value: String,
     isFull: String
   },
-
 
   data: {
     dialogType: '',
@@ -22,7 +22,10 @@ Component({
     animation: '', //动画
     animation_maskLayer: '', //模态框颜色渐变
     height: null,
-    full: false,//是否全屏
+    full: false, //是否全屏
+    isAll: true,
+    selectAll: false,
+    height1: 0,
     dataCollection: [{
       type: "date",
       years: [],
@@ -51,11 +54,15 @@ Component({
         title: '加载中',
       })
       e = e.currentTarget.dataset;
-      let status = e.status, types = this.data.types;
-      let full = e.full; full = full === "false" ? false : true;
+      let status = e.status,
+        types = this.data.types,
+        title = e.title;
+      let full = e.full;
+      full = full === "false" ? false : true;
       let type = e.type;
       let success = e.success;
-      let defaultvalue = e.defaultvalue; defaultvalue = defaultvalue === undefined ? null : defaultvalue;
+      let defaultvalue = e.defaultvalue;
+      defaultvalue = defaultvalue === undefined ? null : defaultvalue;
       /**初始化数据  日期, 高度固定 500rpx; full:false; */
       if (type === types[0]) {
         this._initData({
@@ -63,7 +70,8 @@ Component({
           full: false,
           height: 500,
           success: success,
-          defaultvalue: defaultvalue
+          defaultvalue: defaultvalue,
+          title: title
         })
       } else if (type === types[1]) {
 
@@ -71,11 +79,14 @@ Component({
         this._initData({
           dialogType: type,
           full: false,
-          height: wx.getSystemInfoSync().windowHeight * 2,
+          height: wx.getSystemInfoSync().windowHeight,
           success: success,
           defaultvalue: defaultvalue,
           otherData: e.other,
-          multi: e.multi === undefined ? "N" : e.multi
+          multi: e.multi === undefined ? "N" : e.multi,
+          isAll: e.all === 'false' ? false : true,
+          selectAll: false,
+          title: title
         })
       } else if (type === types[3]) {
         this._initData({
@@ -86,7 +97,8 @@ Component({
           defaultvalue: defaultvalue,
           otherData: e.other,
           title: e.title === undefined ? '' : e.title,
-          multi: e.multi === undefined ? "N" : e.multi
+          multi: e.multi === undefined ? "N" : e.multi,
+          title: title
         })
       }
       this._initDataCollection();
@@ -95,7 +107,8 @@ Component({
 
     /**动画展示 */
     _setAnimation: function (status) {
-      let that = this, height = that.data.height;
+      let that = this,
+        height = that.data.height;
       height = status ? -height : height
       setTimeout(function () {
         let animation1 = wx.createAnimation({
@@ -116,7 +129,9 @@ Component({
 
     },
     _setDialogStatus: function (e) {
-      var status = e.currentTarget.dataset.status, that = this, height = that.data.height;
+      var status = e.currentTarget.dataset.status,
+        that = this,
+        height = that.data.height;
       status = status === "false" ? false : true;
       let animation1 = wx.createAnimation({
         duration: 300,
@@ -138,8 +153,11 @@ Component({
 
     /** 根据类型初始化数据 */
     _initDataCollection: function () {
-      var type = this.data.dialogType, types = this.data.types;
-      let data = this.data.dataCollection, that = this, defaultvalue = this.data.defaultvalue;
+      var type = this.data.dialogType,
+        types = this.data.types;
+      let data = this.data.dataCollection,
+        that = this,
+        defaultvalue = this.data.defaultvalue;
       if (type === types[0]) {
         console.log("<========== date模态框 -> 初始化date数据 ==========>")
         let item = data[0]
@@ -170,7 +188,6 @@ Component({
         }, 5)
       } else if (type === types[1]) {
         var item = data[1];
-
       } else if (type === types[2]) {
         console.log("<========== radio模态框 -> 初始化radio数据 ==========>")
         let item = data[2];
@@ -178,16 +195,20 @@ Component({
         var i = 0;
         item.datatype = [];
         data_type.forEach(x => {
-          item.datatype.push({ key: i++, value: x, select: x === defaultvalue ? true : false })
+          item.datatype.push({ key: i++, value: x, select: defaultvalue.split(",").indexOf(x) === -1 ? false : true })
         })
         this._initData({ dataCollection: data })
+        this._isSelectAll();
       } else if (type === types[3]) {
         console.log("<========== singleRow模态框 -> 初始化radio数据 ==========>")
         let item = data[3];
         item.datatype = this.data.otherData.split(",");
         let i = 0;
         item.datatype.forEach(x => {
-          if (x === defaultvalue) { item.value.push(i); item.selectedData = defaultvalue }
+          if (x === defaultvalue) {
+            item.value.push(i);
+            item.selectedData = defaultvalue
+          }
           i++;
         })
         that._initData({ dataCollection: data });
@@ -214,6 +235,23 @@ Component({
       this._initData({ dataCollection: data })
     },
 
+
+    _setSelectAll: function (e) {
+      this._initData({ selectAll: !this.data.selectAll });
+      let that = this;
+      this.data.dataCollection[2].datatype.forEach(item => {
+        item.select = that.data.selectAll;
+      })
+      this._initData({ dataCollection: this.data.dataCollection })
+    },
+    /** 检测是否所有数据全选 */
+    _isSelectAll: function () {
+      var flag = true;
+      this.data.dataCollection[2].datatype.forEach(item => {
+        if (!item.select) flag = false
+      })
+      this._initData({ selectAll: flag })
+    },
     /** 单个列表监听事件 */
     _getSelectedSingle: function (e) {
       const val = e.detail.value;
@@ -225,14 +263,16 @@ Component({
 
     /** 根据年月日 */
     _setDaysByYearAndMonth: function (year, month) {
-      var date = new Date(year, month + 1, 0).getDate(), days = [];
+      var date = new Date(year, month + 1, 0).getDate(),
+        days = [];
       for (var i = 1; i <= date; i++) { days.push(i) }
       return days;
     },
 
     /** 返回数据 */
     _returnTrueData: function (e) {
-      var data = this.data.dataCollection, that = this;
+      var data = this.data.dataCollection,
+        that = this;
       var type = this.data.types[0];
       var eventPData = { month: 9 }
       data.forEach(item => {
@@ -252,7 +292,8 @@ Component({
     /** 获取 */
     _setSelectedRadio: function (e) {
       var e1 = e.currentTarget.dataset;
-      var index = parseInt(e1.index), isMulti = this.data.multi;
+      var index = parseInt(e1.index),
+        isMulti = this.data.multi;
       var select = e1.select;
       if (isMulti === "Y") {
         this.data.dataCollection[2].datatype.forEach(item => {
@@ -278,6 +319,7 @@ Component({
           that._setDialogStatus(e);
         }, 100)
       }
+      this._isSelectAll();
     },
 
 

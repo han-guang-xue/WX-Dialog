@@ -1,4 +1,4 @@
-<view data-type="{{type}}" data-title="{{lableTitle}}" data-full="{{isFull}}" data-success="{{methodSuccess}}" data-other="{{otherData}}" data-multi="{{multiSelect}}" data-defaultvalue="{{default_value}}" bindtap="_setInitDialogStatus">
+<view data-type="{{type}}" data-title="{{lableTitle}}" data-full="{{isFull}}" data-all="{{all}}" data-success="{{methodSuccess}}" data-other="{{otherData}}" data-multi="{{multiSelect}}" data-defaultvalue="{{default_value}}" bindtap="_setInitDialogStatus">
   <slot></slot>
 </view>
 
@@ -7,12 +7,13 @@
 </view>
 
 <view wx:if="{{dialogType==='date'}}" animation="{{animation}}"
-  class="inner" style="bottom:-{{height}}rpx;height:{{height}}rpx;">
+  class="inner" style="bottom:-{{height}}px;height:{{height}}px;">
   <view class="content">
   	<!-- content 主要内容 -->
 
   	<view class="btn">
   		<view class="btn1" data-status="false" bindtap="_setDialogStatus">{{btn[0]}}</view>
+      <view class="btn_lable" style="top:10rpx;"><view class="btn_lable_value">{{title}}</view></view>
   		<view class="btn2" data-status="false" bindtap="_returnTrueData">{{btn[1]}}</view>
   	</view>
   	<view>
@@ -37,12 +38,13 @@
 
 
 <view wx:if="{{dialogType==='singleRow'}}" animation="{{animation}}"
-  class="inner" style="bottom:-{{height}}rpx;height:{{height}}rpx;">
+  class="inner" style="bottom:-{{height}}px;height:{{height}}px;">
   <view class="content">
   	<!-- content 主要内容 -->
 
   	<view class="btn">
   		<view class="btn1" data-status="false" bindtap="_setDialogStatus">{{btn[0]}}</view>
+      <view class="btn_lable"><view class="btn_lable_value">{{title}}</view></view>
   		<view class="btn2" data-status="false" bindtap="_returnTrueSingleData">{{btn[1]}}</view>
   	</view>
   	<view>
@@ -53,7 +55,6 @@
   	    </picker-view-column>
   	  </picker-view>
     </view>
-
   	<!-- content 主要内容 -->
   </view>
 </view>
@@ -61,18 +62,30 @@
 
 
 
-<view wx:if="{{dialogType==='radio'}}" animation="{{animation}}"  class="inner_radio" style="bottom:-{{height}}rpx;height:{{height}}rpx;">
+<view wx:if="{{dialogType==='radio'}}" animation="{{animation}}"  class="inner_radio" style="bottom:-{{height/2}}px;height:{{height}}px;">
   <view class="inner_radio_content">
   	<!-- content 主要内容 -->
       <view class="inner_radio_main">
-        <view calss="inner_radio_column" data-status="false" wx:for="{{dataCollection[2].datatype}}" data-select="{{item.select}}" data-index="{{item.key}}" bindtap="_setSelectedRadio">
+        <view class="inner_radio_column" wx:if="{{isAll && multi==='Y'}}">
           <view class="inner_radio_lable">
-            <text style="padding-left:20rpx;">{{item.value}}</text>
+            <text style="padding-left:20rpx;">全选</text>
           </view>
           <view class="inner_radio_icon">
+            <image wx:if="{{selectAll}}" data-status="true" bindtap="_setSelectAll" style="height:50rpx;width:50rpx;float:right;margin-right:30rpx;margin-top:25rpx;" src="../images/137_1.png"></image>
+            <image wx:if="{{!selectAll}}" data-status="false" bindtap="_setSelectAll" style="height:50rpx;width:50rpx;float:right;margin-right:30rpx;margin-top:25rpx;" src="../images/136_1.png"></image>
+          </view>
+        </view>
+        <view calss="inner_radio_column" data-status="false" wx:for="{{dataCollection[2].datatype}}" data-select="{{item.select}}" data-index="{{item.key}}" bindtap="_setSelectedRadio">
+          <view class="inner_radio_lable">
+            <view style="padding-left:20rpx;">{{item.value}}</view>
+          </view>
+          <view wx:if="{{multi==='N'}}" class="inner_radio_icon">
             <image wx:if="{{item.select}}" style="height:50rpx;width:50rpx;float:right;margin-right:30rpx;margin-top:25rpx;" src="../images/137.png"></image>
-            <image wx:else style="height:50rpx;width:50rpx;float:right;margin-right:30rpx;margin-top:25rpx;" 
-              src="../images/136.png"></image>
+            <image wx:else style="height:50rpx;width:50rpx;float:right;margin-right:30rpx;margin-top:25rpx;" src="../images/136.png"></image>
+          </view>
+           <view wx:if="{{multi==='Y'}}" class="inner_radio_icon">
+            <image wx:if="{{item.select}}" style="height:50rpx;width:50rpx;float:right;margin-right:30rpx;margin-top:25rpx;" src="../images/137_1.png"></image>
+            <image wx:else style="height:50rpx;width:50rpx;float:right;margin-right:30rpx;margin-top:25rpx;" src="../images/136_1.png"></image>
           </view>
         </view>
       </view>
